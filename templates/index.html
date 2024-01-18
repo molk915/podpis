@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo Asymetrycznego Szyfrowania</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 20px auto;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      form {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      textarea,
+      input {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      li {
+        margin-bottom: 5px;
+        color: green;
+      }
+
+      .error {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Demo Asymetrycznego Szyfrowania</h1>
+
+    <form action="{{ url_for('generate_keys') }}" method="post">
+      <button type="submit">Generuj Klucze</button>
+    </form>
+
+    <form action="{{ url_for('verify_signature_route') }}" method="post">
+      <label for="public_key">Klucz Publiczny:</label>
+      <textarea name="public_key" rows="5" required></textarea>
+
+      <label for="file_path">Ścieżka Pliku:</label>
+      <input type="text" name="file_path" required />
+
+      <label for="signature">Podpis:</label>
+      <textarea name="signature" rows="5" required></textarea>
+
+      <button type="submit">Zweryfikuj Podpis</button>
+    </form>
+
+    <form
+      action="{{ url_for('sign_file_route') }}"
+      method="post"
+      enctype="multipart/form-data"
+    >
+      <label for="private_key">Klucz Prywatny:</label>
+      <textarea name="private_key" rows="5" required></textarea>
+
+      <label for="file">Podpisz Plik:</label>
+      <input
+        type="file"
+        name="file"
+        accept=".txt, .pdf, .doc, .docx"
+        required
+      />
+
+      <button type="submit">Podpisz Plik</button>
+    </form>
+
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <ul>
+      {% for message in messages %}
+      <li class="{{ 'error' if 'invalid' in message.lower() else '' }}">
+        {{ message }}
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %} {% endwith %}
+  </body>
+</html>
